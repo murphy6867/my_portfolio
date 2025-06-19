@@ -1,7 +1,50 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, Download, MapPin } from "lucide-react";
+import { useState } from "react";
 
 export function Hero() {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+
+      const response = await fetch("/sonsawan_cv.pdf");
+
+      if (!response.ok) {
+        throw new Error("File not found");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Sonsawan_Ngamsom_CV.pdf";
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+      alert(
+        "Sorry, the CV file could not be downloaded. Please try again later."
+      );
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleContactClick = () => {
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-200 via-blue-900 to-slate-900">
       <div className="container mx-auto px-4 text-center text-white">
@@ -27,17 +70,20 @@ export function Hero() {
             <Button
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 hover:cursor-pointer"
+              onClick={handleContactClick}
             >
               <Mail className="w-5 h-5 mr-2" />
-              <a href="#contact">Get In Touch</a>
+              Get In Touch
             </Button>
             <Button
               size="lg"
               variant="outline"
               className="border-white text-white hover:bg-white hover:text-black"
+              onClick={handleDownload}
+              disabled={isDownloading}
             >
               <Download className="w-5 h-5 mr-2" />
-              Download CV
+              {isDownloading ? "Downloading..." : "Download CV"}
             </Button>
           </div>
 
