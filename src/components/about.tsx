@@ -1,5 +1,8 @@
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { GraduationCap, Globe, Heart } from "lucide-react";
+
+import ProfileImage from "../../public/profile_image.jpg";
 
 export function About() {
   return (
@@ -13,8 +16,16 @@ export function About() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="w-64 h-64 mx-auto bg-gradient-to-br from-blue-500 to-teal-600 rounded-full flex items-center justify-center">
-                <div className="w-60 h-60 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-6xl font-bold text-gray-800">SN</span>
+                <div className="w-60 h-60 bg-white rounded-full flex items-center justify-center overflow-clip">
+                  <span className="text-6xl font-bold text-gray-800">
+                    <Image
+                      src={ProfileImage}
+                      alt="Sonsawan Ngamsom"
+                      width={240}
+                      height={240}
+                      className="rounded-full mt-10"
+                    />
+                  </span>
                 </div>
               </div>
             </div>
@@ -45,7 +56,7 @@ export function About() {
                   <CardContent className="p-4 flex items-center gap-3">
                     <GraduationCap className="w-6 h-6 text-blue-600" />
                     <div>
-                      <div className="font-semibold">
+                      <div className="font-semibold text-gray-400">
                         Computer Science Student
                       </div>
                       <div className="text-sm text-gray-600">
@@ -58,7 +69,9 @@ export function About() {
                   <CardContent className="p-4 flex items-center gap-3">
                     <Globe className="w-6 h-6 text-teal-600" />
                     <div>
-                      <div className="font-semibold">Multilingual</div>
+                      <div className="font-semibold text-gray-400">
+                        Multilingual
+                      </div>
                       <div className="text-sm text-gray-600">
                         Thai (Fluent), English (Intermediate), German (Basic)
                       </div>
@@ -69,7 +82,9 @@ export function About() {
                   <CardContent className="p-4 flex items-center gap-3">
                     <Heart className="w-6 h-6 text-red-600" />
                     <div>
-                      <div className="font-semibold">Research Interest</div>
+                      <div className="font-semibold text-gray-400">
+                        Research Interest
+                      </div>
                       <div className="text-sm text-gray-600">
                         Explainable-AI with Health Care
                       </div>

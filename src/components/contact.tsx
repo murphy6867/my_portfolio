@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,6 +9,53 @@ import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin, Send, Linkedin, Github } from "lucide-react";
 
 export function Contact() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    company: "",
+    message: "",
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    if (!formData.firstName || !formData.email || !formData.message) {
+      alert("Please fill in all required fields.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Message sent successfully!");
+        setFormData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          company: "",
+          message: "",
+        });
+      } else {
+        alert("Failed to send message. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-20 bg-gray-900 text-white">
       <div className="container mx-auto px-4">
@@ -63,60 +113,111 @@ export function Contact() {
               <CardHeader>
                 <CardTitle className="text-white">Send me a message</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="firstName" className="text-gray-300">
+                        First Name
+                      </Label>
+                      <Input
+                        id="firstName"
+                        value={formData.firstName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            firstName: e.target.value,
+                          })
+                        }
+                        required
+                        className="bg-gray-700 border-gray-600 text-white"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="lastName" className="text-gray-300">
+                        Last Name
+                      </Label>
+                      <Input
+                        id="lastName"
+                        value={formData.lastName}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            lastName: e.target.value,
+                          })
+                        }
+                        required
+                        className="bg-gray-700 border-gray-600 text-white"
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <Label htmlFor="firstName" className="text-gray-300">
-                      First Name
+                    <Label htmlFor="email" className="text-gray-300">
+                      Email
                     </Label>
                     <Input
-                      id="firstName"
+                      id="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          email: e.target.value,
+                        })
+                      }
+                      required
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="lastName" className="text-gray-300">
-                      Last Name
+                    <Label htmlFor="company" className="text-gray-300">
+                      Company (Optional)
                     </Label>
                     <Input
-                      id="lastName"
+                      id="company"
+                      value={formData.company}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          company: e.target.value,
+                        })
+                      }
                       className="bg-gray-700 border-gray-600 text-white"
                     />
                   </div>
-                </div>
-                <div>
-                  <Label htmlFor="email" className="text-gray-300">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="company" className="text-gray-300">
-                    Company (Optional)
-                  </Label>
-                  <Input
-                    id="company"
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="message" className="text-gray-300">
-                    Message
-                  </Label>
-                  <Textarea
-                    id="message"
-                    rows={4}
-                    className="bg-gray-700 border-gray-600 text-white"
-                  />
-                </div>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                  <Send className="w-4 h-4 mr-2" />
-                  Send Message
-                </Button>
+                  <div>
+                    <Label htmlFor="message" className="text-gray-300">
+                      Message
+                    </Label>
+                    <Textarea
+                      id="message"
+                      rows={4}
+                      value={formData.message}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          message: e.target.value,
+                        })
+                      }
+                      required
+                      className="bg-gray-700 border-gray-600 text-white"
+                    />
+                  </div>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-blue-600 hover:bg-blue-700"
+                  >
+                    {isSubmitting ? (
+                      "Sending..."
+                    ) : (
+                      <>
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Message
+                      </>
+                    )}
+                  </Button>
+                </form>
               </CardContent>
             </Card>
           </div>
